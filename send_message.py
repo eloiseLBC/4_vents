@@ -4,13 +4,18 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 
-@app.route('/turno-webhook', methods=['POST'])
+@app.route('/turno-webhook', methods=['POST', 'GET'])
 def turno_webhook():
-    data = request.json
-    print("Données reçues:", data)
-    # Implémentez votre logique ici
-    process_data(data)
-    return jsonify({"status": "success"}), 200
+    if request.method == 'POST':
+        data = request.json
+        print("Données reçues:", data)
+        # Implémentez votre logique ici
+        process_data(data)
+        return jsonify({"status": "success"}), 200
+    elif request.method == 'GET':
+        return "Le serveur est en cours d'exécution et accepte les requêtes POST", 200
+    else:
+        return jsonify({"status": "method not allowed"}), 405
 
 
 def process_data(data):

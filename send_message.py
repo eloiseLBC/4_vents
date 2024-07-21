@@ -23,6 +23,7 @@ def turno_webhook():
         return jsonify({"status": "method not allowed"}), 405
 
 
+""" Mission assignée : Rappel d'aller chercher le linge """
 def mission_assigned(data_turno):
     # Récupérer les données sheets
     sheet_name = data_turno['data']['appartement']
@@ -48,6 +49,7 @@ def mission_assigned(data_turno):
             break
 
 
+""" Ecrire des données dans le google Sheet """
 def write_data_into_sheet(sheet, data):
     values_in_horodateur = sheet.col_values(1)
     nom_empty_values = [value for value in values_in_horodateur if value]
@@ -56,6 +58,7 @@ def write_data_into_sheet(sheet, data):
         sheet.update_cell(row_to_write, i + 1, data[i])
 
 
+""" Pause du programme """
 def time_break(time_to_sleep):
     print(f"Pause de {time_to_sleep} minutes : {datetime.now()}")
     time_second = time_to_sleep * 60
@@ -63,6 +66,7 @@ def time_break(time_to_sleep):
     print(f"Fin de la pause : {datetime.now()}")
 
 
+""" Vérification du formulaire complété """
 def check_form(appartment_name, horodateur):
     sheet = get_sheet(appartment_name)
     values_in_horodateur = sheet.col_values(1)
@@ -78,8 +82,8 @@ def check_form(appartment_name, horodateur):
     return True
 
 
+""" Mission commencée : Rappel de scanner le QR pour le formulaire """
 def mission_started(data_turno):
-    # TODO : Vérifier si le formulaire a été soumis
     horodateur = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
     service_agent = data_turno['data']['service_agent']
     appartment = data_turno['data']['appartement']
@@ -94,7 +98,6 @@ def mission_started(data_turno):
         send_whatsapp(agent_number, agent_name, MESSAGE_CHECK_FORM)
 
 
-
 """ Récupération des données de l'API turno """
 def process_data(data_turno):
     # TODO : Implémenter la logique de traitement des données ici
@@ -106,6 +109,7 @@ def process_data(data_turno):
         mission_started(data_turno)
 
 
+""" Récupérer les données d'une feuille Google Sheets """
 def get_sheet(sheet_name):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
@@ -115,8 +119,8 @@ def get_sheet(sheet_name):
     return sheet
 
 
+""" Envoi de messages whatsapp"""
 def send_whatsapp(number, name, message):
-    """ Envoi de messages whatsapp"""
     # Votre Account SID de Twilio
     account_sid = 'ACf567f7cc362746309161d810eb1516a2'
     # Votre Auth Token de Twilio
@@ -129,6 +133,7 @@ def send_whatsapp(number, name, message):
     print(message.sid)
 
 
+""" Trouver le numéro de téléphone d'un agent """
 def find_agent_number(data_turno):
     agent_name = data_turno['data']['service_agent']
     print(f"Nom de l'agent : {agent_name}")

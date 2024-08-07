@@ -7,19 +7,9 @@ from constants import MESSAGE_CHECK_FORM, MESSAGE_TAKE_LINGE
 app = Flask(__name__)
 
 
-def register_routes():
-    data_turno = request.json
-    routes = [
-        ('/webhook_assigned', mission_assigned(data_turno), ['POST', 'GET']),
-        ('/webhook_started', mission_started(data_turno), ['POST', 'GET'])
-    ]
-    for route in routes:
-        app.add_url_rule(route[0], view_func=route[1], methods=route[2])
-
-
 def mission_assigned_treatment(data_turno):
     # Récupérer les données sheets
-    sheet_name = data_turno['data']['appartement']
+    sheet_name = data_turno['property']['name']
     sheet = utils.get_sheet(sheet_name)
     data_sheets = sheet.get_all_records()
     print(f"Données google sheets {data_sheets}")
@@ -67,8 +57,8 @@ def check_form(appartment_name, horodateur):
 
 def mission_started_treatment(data_turno):
     horodateur = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-    service_agent = data_turno['data']['service_agent']
-    appartment = data_turno['data']['appartement']
+    service_agent = data_turno['cleaner']['name']
+    appartment = data_turno['property']['name']
     data = [horodateur, service_agent, appartment]
     sheet = utils.get_sheet("Mission commencée")
     # Ecrire les données dans le google Sheet
@@ -87,8 +77,9 @@ def home():
 
 # Mission assignée : Envoi message Whatsapp si le linge doit être récupéré
 @app.route('/webhook_assigned', methods=['POST', 'GET'])
-def mission_assigned(data_turno):
+def mission_assigned():
     if request.method == 'POST':
+        data_turno = request.json
         """ Mission assignée : Rappel d'aller chercher le linge, Rappel de déposer le linge """
         mission_assigned_treatment(data_turno)
         return jsonify({"status": "success"}), 200
@@ -100,8 +91,9 @@ def mission_assigned(data_turno):
 
 # Mission commencée : Rappel pour remplir le formulaire
 @app.route('/webhook_started', methods=['POST', 'GET'])
-def mission_started(data_turno):
+def mission_started():
     if request.method == 'POST':
+        data_turno = request.json
         """ Mission assignée : Rappel d'aller chercher le linge, Rappel de déposer le linge """
         mission_started_treatment(data_turno)
         return jsonify({"status": "success"}), 200
@@ -111,8 +103,16 @@ def mission_started(data_turno):
         return jsonify({"status": "method not allowed"}), 405
 
 
-register_routes()
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify("Resource not found"), 404
+
+
+@app.errorhandler(500)
+def server_error(error):
+    return jsonify("Internal server error"), 500
+
 
 if __name__ == "__main__":
     # Port spécifié sur ngrok
-    app.run(port=80)
+    app.run(host='0.0.0.0', port=80)

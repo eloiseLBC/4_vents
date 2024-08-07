@@ -2,7 +2,8 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from twilio.rest import Client
 
-""" Récupérer les données d'une feuille Google Sheets """
+
+# Récupérer les données d'une feuille Google Sheets
 def get_sheet(sheet_name):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
@@ -12,7 +13,7 @@ def get_sheet(sheet_name):
     return sheet
 
 
-""" Ecrire des données dans le google Sheet """
+# Ecrire des données dans le google Sheet
 def write_data_into_sheet(sheet, data):
     values_in_horodateur = sheet.col_values(1)
     nom_empty_values = [value for value in values_in_horodateur if value]
@@ -21,7 +22,7 @@ def write_data_into_sheet(sheet, data):
         sheet.update_cell(row_to_write, i + 1, data[i])
 
 
-""" Envoi de messages whatsapp"""
+# Envoi de messages whatsapp
 def send_whatsapp(number, name, message):
     # Votre Account SID de Twilio
     account_sid = 'ACf567f7cc362746309161d810eb1516a2'
@@ -35,9 +36,9 @@ def send_whatsapp(number, name, message):
     print(message.sid)
 
 
-""" Trouver le numéro de téléphone d'un agent """
+# Trouver le numéro de téléphone d'un agent
 def find_agent_number(data_turno):
-    agent_name = data_turno['data']['service_agent']
+    agent_name = data_turno['cleaner']['name']
     print(f"Nom de l'agent : {agent_name}")
     # Récupérer les données des agents
     sheet = get_sheet("Agents")

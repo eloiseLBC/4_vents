@@ -1,9 +1,10 @@
+import sys
 import time
 from datetime import datetime
 from flask import Flask, request, jsonify
 import utils
 import requests
-from constants import MESSAGE_CHECK_FORM, MESSAGE_TAKE_LINGE, BEARER_TOKEN
+from constants import MESSAGE_CHECK_FORM, MESSAGE_TAKE_LINGE, BEARER_TOKEN, TBNB_ID
 
 app = Flask(__name__)
 
@@ -105,24 +106,22 @@ def mission_started():
 
 
 # Avoir la liste des propriétés ou créer une propriété
-@app.route('/v2/bookings', methods=['POST', 'GET'])
+@app.route('/v2/properties', methods=['POST', 'GET'])
 def create_properties():
-    url = "https://sandbox.turnoverbnb.com/v2/properties?page=1&limit=20&sort=alias&order=asc"
+    url = "https://sandbox.turno.com/v2/properties?page=1&limit=2&sort=alias&order=asc"
     headers = {
         "Accept": "application/json",
-        "Authorization": f"Bearer {BEARER_TOKEN}"
+        "Authorization": f"Bearer {BEARER_TOKEN}",
+        "TBNB-Partner-ID": TBNB_ID,
     }
     if request.method == 'POST':
-        data_turno = request.json
-        """ Mission assignée : Rappel d'aller chercher le linge, Rappel de déposer le linge """
-        print(data_turno)
         return jsonify({"status": "success"}), 200
     elif request.method == 'GET':
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
             return jsonify(response.json()), 200
-        else :
-            return jsonify({"error": response.text}), response.status_code
+        else:
+            sys.exit(1)
     else:
         return jsonify({"status": "method not allowed"}), 405
 
@@ -138,5 +137,5 @@ def server_error(error):
 
 
 if __name__ == "__main__":
-    # Port spécifié sur ngrok
+    # Port spécifié sur ngrok (80)-(22 pour EC2)
     app.run(host='0.0.0.0', port=80)

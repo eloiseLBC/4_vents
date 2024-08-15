@@ -140,6 +140,6 @@ def server_error(error):
 if __name__ == "__main__":
     try:
         # Port spécifié 22 pour EC2
-        app.run(host='0.0.0.0', port=22)
+        app.run(host='0.0.0.0', port=8080)
     except Exception as e:
         logging.error(f"Error : {e}")

@@ -105,7 +105,7 @@ def mission_started():
         return jsonify({"status": "method not allowed"}), 405
 
 
-# Avoir la liste des propriétés ou créer une propriété
+# GET list of proprieties / POST create propriety
 @app.route('/v2/properties', methods=['POST', 'GET'])
 def create_properties():
     url = "https://sandbox.turno.com/v2/properties?page=1&limit=2&sort=alias&order=asc"
@@ -137,5 +137,8 @@ def server_error(error):
 
 
 if __name__ == "__main__":
-    # Port spécifié sur ngrok (80)-(22 pour EC2)
-    app.run(host='0.0.0.0', port=80)
+    try:
+        # Port spécifié sur ngrok (80)-(22 pour EC2)
+        app.run(host='0.0.0.0', port=22)
+    except Exception as e:
+        print(f"Error : {e}")

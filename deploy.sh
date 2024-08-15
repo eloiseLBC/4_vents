@@ -2,4 +2,4 @@
 git add .
 git commit -m "Deploy test"
 git pull origin main
-sudo systemctl restart send_message.py
+sudo systemctl restart gunicorn

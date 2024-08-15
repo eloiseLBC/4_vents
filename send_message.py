@@ -138,7 +138,7 @@ def server_error(error):
 
 if __name__ == "__main__":
     try:
-        # Port spécifié 22 pour EC2
+        # Port spécifié 22 pour l'instance EC2
         app.run(host='0.0.0.0', port=22)
     except Exception as e:
         print(f"Error : {e}")

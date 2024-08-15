@@ -1,9 +1,37 @@
-# Authentification
+# Authentication
 TBNB_ID = "343676d7-e677-4164-a5c0-16809229bafd"
-BEARER_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxNCIsImp0aSI6IjIzZDEzYzRiYjVjNGJjMGQwNjQzNDNiYjFkYTNhM2Q2MzhmNmY3YmZjY2VmOWQyNmY5OTRjZGFlY2NkYTRlNDJhMmIyZTUxOTEyMmMyM2I3IiwiaWF0IjoxNzIzMDQ4OTIzLjk2NDg3OCwibmJmIjoxNzIzMDQ4OTIzLjk2NDg4LCJleHAiOjE3NTQ1ODQ5MjMuOTU4NzIyLCJzdWIiOiIiLCJzY29wZXMiOltdfQ.InxRcoL-3wd2LwyuNwJ6XE7lJmn8jNn8MhaWb2d9IHmXRghVuYrViiC7YpARtoQwuiyHMMFgT8Db7VV_-_dqkhWUUMWPvpw1AZFpf9LwpGyhinpJgGmhpm7UiNDetjCMgN0aSOKH_DQRumtih7rQ9FO2h11dxXq0j-DlVpDh3I1Iot2y7YeDUSXmlwz2cHWKcAgIK_uBkpmcoYIBV70ygwFZXuMZFq6LX8pNGC6YWda5KR_ouHV57tsgUj-6lQ3w7LeeUdZBNQ3Gg7KY35Px8VmlhO7zyTg5iQzuelF60zlmVIFJgxin2nWMHPWScHmAPJi3Zp1irDiZIhz_upVT2Xu8ZnMPRsleoKnmaR7KoGNg2nODKBnZQoYe5UX0IKHtu5_2bIWPCSLLFWC7Ir1BLBwuXbdZPDa-zJg5nHQkmYDJXNpeDgj3w_rxmb8dRBqoqG8C2rQtOyQJr7nqJj70Cdf3toUog4Ds8WDuaRtT2Kq_uFsmiWfEiivCLvsGn97acF-85Gy0hMpz789xwo7DjeViBUhTtbSIfrRMNvQQ0ubVbwMnu5hFbR7rcohUgLXVqpFk5gNMPqxx_yEKHee-7PlUUCG72Xo4GdeNyNgtOgnvTzDz8y_LNDcraPy_VrrgHJn0rdMJBt-gyPJlrLbzDj7j1a6wJQ-cV5hBEU31p7Y"
-
+BEARER_TOKEN = ("Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9"
+                ".eyJhdWQiOiIxIiwianRpIjoiNDQ1YWVmMWUxNGZkMTBjZDQ0MDhiZmVmODE3Zjk3OGRkZWM2Y2M5MGU5ZjM3YT"
+                "gwM2E1MGIyZWNmZDc2MzljMWMzZGEzZjEzMmU0YzRmZTgiLCJpYXQiOjE3MjM3MzA5NTcuMDg3ODY2LCJuYmYiO"
+                "jE3MjM3MzA5NTcuMDg3ODY4LCJleHAiOjQ4NDc3ODIxNTcuMDgyODY4LCJzdWIiOiIyOTciLCJzY29wZXMiOltd"
+                "fQ.cQCi3XKeKL3B1D4Adcm_qKbiSROnU0CIyZYt6EfdvHWIKgMUYUUsMCvXl_kqRVxDq2QdR_agl490jqZLQ_Rq"
+                "wmzxPqmoqrM-vZfnZCFo9s3ZTg77oz6NOd34mlsZ2uI2v8i4zSGdA2hpEn5QqAZtLkhgdJ8Cd8QoAo1Ttryagsl"
+                "4gKmDG6ne0lJBPQRth0pEZwolKpECbQ7ZFjYCOjf3ypJblZE4EK2pNsUwoRaBpg63gG3mZXqDnTB33KzQKCiPAD"
+                "jBX4mZHlS1vn-I7WQGtLfZXnW6UzsghRVmTzo9oB1i7aQJZaR_5POJHRB0p2XIflvjnWf_SbfKqcRuCiqugM17t"
+                "rdqeEMQTysxTUPXfyufmjWZ-6QspGsYekLbASh9RHyHhCh3H6IwL370Pj0JqBV0wznTGXebo2xuIKoFMxDMbfB3"
+                "EyufDvuMv61RC-wztrTPwkCBx1HVfFbo7yhjyLTZBpYW4r3wbcB5_goRhdRtxxrk1SvN89Vfx4xRaK3jFDarQR-"
+                "MYiMrcCBdm6yRGA82P8gJX0ax6X1ymeVhy6rplptk4ij5ClXg8q_JB9i4vdOhdgX54ZvbxJuK35S_dSzytU8P3Q"
+                "6OJva5Jj0KrXmip9pV5_yfX5pPm42qmLyG8xipmskE6cJ2qK_dSXE8y4efM7L46vinDo7Y4zMrfko")
 # Messages
-MESSAGE_TAKE_LINGE = ", vous devez aller chercher le linge propre à la laverie partenaire WashBar au : 39 "
-"Rue Ausone, 33000, Bordeaux. Attention : Le WashBar est fermé le samedi, ainsi que "
-"le dimanche jusqu'à 15h."
+SCHEDULE_WASHBAR = ("Le WashBar se situe au au : 39 Rue Ausone, 33000, Bordeaux. Attention : Le WashBar "
+                    "est fermé le samedi, ainsi que le dimanche jusqu'à 15h.")
+MESSAGE_TAKE_LINGE_FRIDAY = (", vous devez aller chercher le linge propre au plus tard vendredi, à la "
+                             "laverie partenaire WashBar. " + SCHEDULE_WASHBAR)
+MESSAGE_PUT_LINGE_S1_SUNDAY = (", vous devez aller déposer le linge sale dimanche, à partir de 15h, à la "
+                               "laverie partenaire WashBar. " + SCHEDULE_WASHBAR)
+MESSAGE_PUT_MONDAY = (", vous devez aller déposer le linge sale lundi, à la laverie partenaire WashBar. "
+                      + SCHEDULE_WASHBAR)
+MESSAGE_PUT_TUESDAY = (", vous devez aller déposer le linge sale mardi, à la laverie partenaire WashBar. "
+                       + SCHEDULE_WASHBAR)
+MESSAGE_PUT_WEDNESDAY = (", vous devez aller déposer le linge sale mercredi, à la laverie partenaire WashBar. "
+                         + SCHEDULE_WASHBAR)
+MESSAGE_PUT_MONDAY_TAKE_FRIDAY = (", vous devez aller déposer le linge sale lundi, à la laverie partenaire WashBar. "
+                                  "Vous devez également aller le récupérer vendredi car une réservation à lieu le même "
+                                  "jour. " + SCHEDULE_WASHBAR)
+MESSAGE_PUT_TUESDAY_TAKE_FRIDAY = (", vous devez aller déposer le linge sale mardi, à la laverie partenaire WashBar. "
+                                   "Vous devez également aller le récupérer vendredi car une réservation à lieu le même"
+                                   " jour. " + SCHEDULE_WASHBAR)
+MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY = (", vous devez aller déposer le linge sale mercredi, à la laverie partenaire "
+                                     "WashBar. Vous devez également aller le récupérer vendredi car une réservation à "
+                                     "lieu le même jour. " + SCHEDULE_WASHBAR)
 MESSAGE_CHECK_FORM = ", n'oubliez pas de remplir le formulaire pour le linge sale."

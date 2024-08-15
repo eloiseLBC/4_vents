@@ -1,6 +1,31 @@
+from datetime import datetime, timedelta
+
 import gspread
+import requests
 from oauth2client.service_account import ServiceAccountCredentials
 from twilio.rest import Client
+from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_PUT_LINGE_S1_SUNDAY, MESSAGE_PUT_MONDAY, MESSAGE_PUT_TUESDAY,
+                       MESSAGE_PUT_WEDNESDAY, MESSAGE_PUT_MONDAY_TAKE_FRIDAY, MESSAGE_TAKE_LINGE_FRIDAY,
+                       MESSAGE_PUT_TUESDAY_TAKE_FRIDAY, MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY)
+
+
+# Récupérer le nom de la feuille Excel
+def get_sheet_name(id_property):
+    url = f"https://sandbox.turno.com/v2/properties/{id_property}"
+    headers = {
+        "Accept": "application/json",
+        "TBNB-Partner-ID": TBNB_ID,
+        "Authorization": BEARER_TOKEN
+    }
+    response = requests.get(url, headers=headers)
+    # Vérifier le statut de la réponse
+    if response.status_code == 200:
+        sheet_name = response.json()["data"]["alias"]
+        return sheet_name
+    else:
+        # Si la requête échoue, afficher un message d'erreur
+        print("Erreur")
+        return f"Erreur {response.status_code}: {response.text}"
 
 
 # Récupérer les données d'une feuille Google Sheets
@@ -13,6 +38,70 @@ def get_sheet(sheet_name):
     return sheet
 
 
+# Request properties
+def get_properties(id_property):
+    url = f"https://sandbox.turno.com/v2/bookings/?properties[]={id_property}"
+    headers = {
+        "Accept": "application/json",
+        "TBNB-Partner-ID": TBNB_ID,
+        "Authorization": BEARER_TOKEN
+    }
+    return requests.get(url, headers=headers)
+
+
+# Récupérer les dates de booking
+def get_bookings_dates(id_property):
+    response = get_properties(id_property)
+    # Check response status
+    if response.status_code == 200:
+        total_bookings = response.json()["data"]["total"]
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        now = datetime.strptime(now_str, '%Y-%m-%d %H:%M:%S')
+        if total_bookings > 1:
+            checkin = response.json()["data"]["items"][0]["checkin"]
+            checkout = response.json()["data"]["items"][0]["checkout"]
+            checkin_date = datetime.strptime(checkin, '%Y-%m-%dT%H:%M:%S.%fZ')
+            checkout_date = datetime.strptime(checkout, '%Y-%m-%dT%H:%M:%S.%fZ')
+            diff_now_checkin = checkin_date - now
+            for item in response.json()["data"]["items"]:
+                checkin_item = datetime.strptime(item["checkin"], '%Y-%m-%dT%H:%M:%S.%fZ')
+                if (checkin_item - now) < diff_now_checkin:
+                    checkin_date = checkin_item
+                    checkout_date = datetime.strptime(item["checkout"], '%Y-%m-%dT%H:%M:%S.%fZ')
+            print(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
+            return checkin_date, checkout_date
+        elif total_bookings == 1:
+            checkin = response.json()["data"]["items"][0]["checkin"]
+            checkout = response.json()["data"]["items"][0]["checkout"]
+            checkin_date = datetime.strptime(checkin, '%Y-%m-%dT%H:%M:%S.%fZ')
+            checkout_date = datetime.strptime(checkout, '%Y-%m-%dT%H:%M:%S.%fZ')
+            print(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
+            return checkin_date, checkout_date
+        else:
+            print("Aucune reservation")
+            return 0, 0
+    else:
+        print("Erreur")
+        return f"Erreur {response.status_code}: {response.text}"
+
+
+# Get next booking checkin
+def get_next_booking(id_property):
+    response = get_properties(id_property)
+    now = datetime.now()
+    lst = []
+    # Check response status
+    if response.status_code == 200:
+        for item in response.json()["data"]["items"]:
+            lst.append(item["checkin"])
+        dates = [datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S.%fZ') for date_str in lst]
+        closest_booking = min(dates, key=lambda date: abs(date - now))
+        return closest_booking.date()
+    else:
+        print("Erreur")
+        return f"Erreur {response.status_code}: {response.text}"
+
+
 # Ecrire des données dans le google Sheet
 def write_data_into_sheet(sheet, data):
     values_in_horodateur = sheet.col_values(1)
@@ -20,6 +109,86 @@ def write_data_into_sheet(sheet, data):
     row_to_write = len(nom_empty_values) + 1
     for i in range(3):
         sheet.update_cell(row_to_write, i + 1, data[i])
+
+
+# Gestion des situations de notifications
+def manage_bookings_notifications(checkin, checkout, linges_propres, id_property):
+    # Get index day week of booking
+    index_day_checkin = checkin.weekday() + 1
+    index_day_checkout = checkout.weekday() + 1
+    print(f"Day week checkin : {index_day_checkin}")
+    print(f"Day week checkout : {index_day_checkout}")
+    # Get next booking
+    simplified_checkout = checkout.date()
+    next_booking = get_next_booking(id_property)
+    print(f"Simplified checkout : {simplified_checkout}")
+    print(f"Simplified checkout type : {type(simplified_checkout)}")
+    print(f"Next booking : {next_booking}")
+    print(f"Next booking type : {type(next_booking)}")
+    if linges_propres == 1:
+        if index_day_checkin in (1, 2, 3, 4):
+            if index_day_checkout == 6:
+                # S1-1:4
+                return MESSAGE_TAKE_LINGE_FRIDAY
+        elif index_day_checkin == 1:
+            if index_day_checkout == 5:
+                # S2-1
+                if next_booking == simplified_checkout:
+                    return MESSAGE_PUT_MONDAY_TAKE_FRIDAY
+                elif next_booking == (simplified_checkout + timedelta(days=1)):
+                    return MESSAGE_TAKE_LINGE_FRIDAY
+                else:
+                    return MESSAGE_PUT_MONDAY
+        elif index_day_checkin == 2:
+            if index_day_checkout == 5:
+                # S2-2
+                if next_booking == simplified_checkout:
+                    return MESSAGE_PUT_TUESDAY_TAKE_FRIDAY
+                elif next_booking == (simplified_checkout + timedelta(days=1)):
+                    return MESSAGE_TAKE_LINGE_FRIDAY
+                else:
+                    return MESSAGE_PUT_TUESDAY
+        elif index_day_checkin == 3:
+            if index_day_checkout == 5:
+                # S2-3
+                if next_booking == simplified_checkout:
+                    return MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY
+                elif next_booking == (simplified_checkout + timedelta(days=1)):
+                    return MESSAGE_TAKE_LINGE_FRIDAY
+                else:
+                    return MESSAGE_PUT_WEDNESDAY
+        elif index_day_checkin == 6:
+            if index_day_checkout == 6:
+                # S1 underline dans doc
+                return MESSAGE_PUT_LINGE_S1_SUNDAY
+    elif linges_propres == 2:
+        if index_day_checkin == 1:
+            if index_day_checkout == 5:
+                # S3-1
+                if next_booking == simplified_checkout:
+                    return MESSAGE_PUT_MONDAY_TAKE_FRIDAY
+                elif next_booking == (simplified_checkout + timedelta(days=1)):
+                    return MESSAGE_TAKE_LINGE_FRIDAY
+                else:
+                    return MESSAGE_PUT_MONDAY
+        elif index_day_checkin == 2:
+            if index_day_checkout == 5:
+                # S3-2
+                if next_booking == simplified_checkout:
+                    return MESSAGE_PUT_TUESDAY_TAKE_FRIDAY
+                elif next_booking == (simplified_checkout + timedelta(days=1)):
+                    return MESSAGE_TAKE_LINGE_FRIDAY
+                else:
+                    return MESSAGE_PUT_TUESDAY
+        elif index_day_checkin == 3:
+            if index_day_checkout == 5:
+                # S3-3
+                if next_booking == simplified_checkout:
+                    return MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY
+                elif next_booking == (simplified_checkout + timedelta(days=1)):
+                    return MESSAGE_TAKE_LINGE_FRIDAY
+                else:
+                    return MESSAGE_PUT_WEDNESDAY
 
 
 # Envoi de messages whatsapp

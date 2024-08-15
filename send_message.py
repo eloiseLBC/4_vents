@@ -5,14 +5,15 @@ from datetime import datetime
 from flask import Flask, request, jsonify
 import utils
 import requests
-from constants import MESSAGE_CHECK_FORM, MESSAGE_TAKE_LINGE, BEARER_TOKEN, TBNB_ID
+from constants import MESSAGE_CHECK_FORM, BEARER_TOKEN, TBNB_ID
 
 app = Flask(__name__)
 
 
 def mission_assigned_treatment(data_turno):
+    id_property = data_turno['property']['id']
     # Récupérer les données sheets
-    sheet_name = data_turno['property']['name']
+    sheet_name = utils.get_sheet_name(id_property)
     sheet = utils.get_sheet(sheet_name)
     data_sheets = sheet.get_all_records()
     print(f"Données google sheets {data_sheets}")
@@ -31,8 +32,11 @@ def mission_assigned_treatment(data_turno):
             linges_propres = row['Nombre de linges propres restants']
             print(f"Valeur de linges propres restants : {linges_propres}")
             if linges_propres == 1:
+                # Checker les dates de bookings
+                checkin, checkout = utils.get_bookings_dates(id_property)
+                message_to_send = utils.manage_bookings_notifications(checkin, checkout, linges_propres, id_property)
                 agent_number, agent_name = utils.find_agent_number(data_turno)
-                utils.send_whatsapp(agent_number, agent_name, MESSAGE_TAKE_LINGE)
+                utils.send_whatsapp(agent_number, agent_name, message_to_send)
             break
 
 
@@ -127,6 +131,27 @@ def create_properties():
         return jsonify({"status": "method not allowed"}), 405
 
 
+# GET list of proprieties / POST create propriety
+@app.route('/v2/bookings/', methods=['POST', 'GET'])
+def get_bookings():
+    url = "https://sandbox.turno.com/v2/bookings/"
+    headers = {
+        "Accept": "application/json",
+        "Authorization": f"Bearer {BEARER_TOKEN}",
+        "TBNB-Partner-ID": TBNB_ID,
+    }
+    if request.method == 'POST':
+        return jsonify({"status": "success"}), 200
+    elif request.method == 'GET':
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return jsonify(response.json()), 200
+        else:
+            sys.exit(1)
+    else:
+        return jsonify({"status": "method not allowed"}), 405
+
+
 @app.errorhandler(404)
 def not_found(error):
     return jsonify("Resource not found"), 404
@@ -139,7 +164,6 @@ def server_error(error):
 
 if __name__ == "__main__":
     try:
-        # Port spécifié 22 pour EC2
-        app.run(host='0.0.0.0', port=8080)
+        app.run(host='0.0.0.0', port=3000)
     except Exception as e:
         logging.error(f"Error : {e}")

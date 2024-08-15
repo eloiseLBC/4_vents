@@ -31,7 +31,7 @@ def mission_assigned_treatment(data_turno):
         if horodateur_row == horodateur_final:
             linges_propres = row['Nombre de linges propres restants']
             print(f"Valeur de linges propres restants : {linges_propres}")
-            if linges_propres == 1:
+            if linges_propres in (1, 2):
                 # Checker les dates de bookings
                 checkin, checkout = utils.get_bookings_dates(id_property)
                 message_to_send = utils.manage_bookings_notifications(checkin, checkout, linges_propres, id_property)

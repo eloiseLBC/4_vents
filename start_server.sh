@@ -8,8 +8,8 @@ sleep 10
 
 # Démarrer LocalTunnel en arrière-plan
 echo "Démarrage de LocalTunnel..."
-nohup lt --port 3000 &
-# --subdomain votresousdomaine &
+SUBDOMAIN="app.45.huhujjkdenwhue.7852.tl"
+nohup lt --port 3000 & --subdomain ${SUBDOMAIN} &
 
 # Remplacez "votresousdomaine" par le sous-domaine que vous souhaitez utiliser avec LocalTunnel.
 # Vous pouvez aussi omettre l'option --subdomain pour que LocalTunnel génère un sous-domaine aléatoire.

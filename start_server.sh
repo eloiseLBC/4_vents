@@ -15,4 +15,3 @@ echo "Démarrage de LocalTunnel..."
 nohup lt --port 3000 > $LOCAL_TUNNEL_LOG 2>&1 &
 
 echo "Le serveur Flask et LocalTunnel sont en cours d'exécution."
-tail -f flask.log

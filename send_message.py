@@ -114,7 +114,7 @@ def mission_started():
 # GET list of proprieties / POST create propriety
 @app.route('/v2/properties', methods=['POST', 'GET'])
 def create_properties():
-    url = "https://sandbox.turno.com/v2/properties?page=1&limit=2&sort=alias&order=asc"
+    url = "https://api.turno.com/v2/properties/"
     headers = {
         "Accept": "application/json",
         "Authorization": f"Bearer {BEARER_TOKEN}",
@@ -135,7 +135,7 @@ def create_properties():
 # GET list of proprieties / POST create propriety
 @app.route('/v2/bookings/', methods=['POST', 'GET'])
 def get_bookings():
-    url = "https://sandbox.turno.com/v2/bookings/"
+    url = "https://api.turno.com/v2/bookings/"
     headers = {
         "Accept": "application/json",
         "Authorization": f"Bearer {BEARER_TOKEN}",

@@ -15,7 +15,7 @@ from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_TAKE_LINGE_FRIDAY, MESSAGE
 
 # Récupérer le nom de la feuille Excel
 def get_sheet_name(id_property):
-    url = f"https://sandbox.turno.com/v2/properties/{id_property}"
+    url = f"https://api.turno.com/v2/properties/{id_property}"
     headers = {
         "Accept": "application/json",
         "TBNB-Partner-ID": TBNB_ID,
@@ -44,7 +44,7 @@ def get_sheet(sheet_name):
 
 # Request properties
 def get_properties(id_property):
-    url = f"https://sandbox.turno.com/v2/bookings/?properties[]={id_property}"
+    url = f"https://api.turno.com/v2/bookings/?properties[]={id_property}"
     headers = {
         "Accept": "application/json",
         "TBNB-Partner-ID": TBNB_ID,

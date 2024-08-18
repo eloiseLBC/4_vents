@@ -1,17 +1,15 @@
 # Authentication
-TBNB_ID = "343676d7-e677-4164-a5c0-16809229bafd"
-BEARER_TOKEN = ("Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9"
-                ".eyJhdWQiOiIxIiwianRpIjoiNDQ1YWVmMWUxNGZkMTBjZDQ0MDhiZmVmODE3Zjk3OGRkZWM2Y2M5MGU5ZjM3YT"
-                "gwM2E1MGIyZWNmZDc2MzljMWMzZGEzZjEzMmU0YzRmZTgiLCJpYXQiOjE3MjM3MzA5NTcuMDg3ODY2LCJuYmYiO"
-                "jE3MjM3MzA5NTcuMDg3ODY4LCJleHAiOjQ4NDc3ODIxNTcuMDgyODY4LCJzdWIiOiIyOTciLCJzY29wZXMiOltd"
-                "fQ.cQCi3XKeKL3B1D4Adcm_qKbiSROnU0CIyZYt6EfdvHWIKgMUYUUsMCvXl_kqRVxDq2QdR_agl490jqZLQ_Rq"
-                "wmzxPqmoqrM-vZfnZCFo9s3ZTg77oz6NOd34mlsZ2uI2v8i4zSGdA2hpEn5QqAZtLkhgdJ8Cd8QoAo1Ttryagsl"
-                "4gKmDG6ne0lJBPQRth0pEZwolKpECbQ7ZFjYCOjf3ypJblZE4EK2pNsUwoRaBpg63gG3mZXqDnTB33KzQKCiPAD"
-                "jBX4mZHlS1vn-I7WQGtLfZXnW6UzsghRVmTzo9oB1i7aQJZaR_5POJHRB0p2XIflvjnWf_SbfKqcRuCiqugM17t"
-                "rdqeEMQTysxTUPXfyufmjWZ-6QspGsYekLbASh9RHyHhCh3H6IwL370Pj0JqBV0wznTGXebo2xuIKoFMxDMbfB3"
-                "EyufDvuMv61RC-wztrTPwkCBx1HVfFbo7yhjyLTZBpYW4r3wbcB5_goRhdRtxxrk1SvN89Vfx4xRaK3jFDarQR-"
-                "MYiMrcCBdm6yRGA82P8gJX0ax6X1ymeVhy6rplptk4ij5ClXg8q_JB9i4vdOhdgX54ZvbxJuK35S_dSzytU8P3Q"
-                "6OJva5Jj0KrXmip9pV5_yfX5pPm42qmLyG8xipmskE6cJ2qK_dSXE8y4efM7L46vinDo7Y4zMrfko")
+TBNB_ID = "26d7d9cf-6bcb-4317-afd0-c0bdf30d2014"
+BEARER_TOKEN = ("Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiODdlZDU5NmIyOGQ3ZWQxNmUyMTU0Y2Jk"
+                "Mzk5YzFiMDljZDdjN2Q2OGVhZGZlNjg5ODk5Yzc5ZGNkZDc3YzI3MGZmNjVlOWRkNzJlNDBhYjkiLCJpYXQiOjE3MjQwMDI2NzkuN"
+                "DAxNTAzLCJuYmYiOjE3MjQwMDI2NzkuNDAxNTA4LCJleHAiOjQ4NDgwNTM4NzkuMzk1NTA1LCJzdWIiOiI1MDk2MjkiLCJzY29wZX"
+                "MiOltdfQ.JUQILJQ69CaQmbAoUT78KhADlvMhDxUTIzhR0JoHpd7R5YCgUNM6-zfily-X4-BFFY8aM0cDEcPNnJ8OrgRRCsk-WxHH"
+                "dQyZ2HWUfs6zLgse_-hlw54LXu7r4w61gMEhdoNQJYkU8K3PUNCygJ5sn-Gj7NqMr9c662HWUDlTYuCH7gsCgbaMUtgzAnaMjr_j8"
+                "rK7ALM2F5hxnyqA0C7zvuyJnXvAPIUwoQT8AXEcWKb3tfLx5e2nir1i0PiViHKBbzmynGZb0b0T1ErnUEpqzlUaa4MXMrkLFSscvW"
+                "nT5QJld3o3UTyu6v7fFAQXxpyi7uYm1cFV_z-Sb6DUNIJKdSOuvh55qE-4gXFW6PLWHKKNLOneG54Ioxl907swlkY_7x7xzNKAejL"
+                "cPnYuXgcWNaLlTV7xQ5zlMD5qfbZofZjff5T2JAzFxeFiovozPusfQukTbAc6CZFW6pd3maxTB-zr0wFvJ7rLEpQS_Ucp8JiS0UDA"
+                "0nmi4Uz_PD9AjyCLO1neSXdEIucnyA1fJCWLzbXb9BfV-kzqsfu3R7GlkaNmgG-__vNyxxm07aHcmi_P0A8jA6cnT73jXjq6DRrok"
+                "WmmBNZ8qcum9euzJoD9isZ-pbMZYQoQFw7FDka-Db-qYEuLnPVhwSiW6W3Gw2wmGclt6QWFGS9KDgtSMrjih24")
 # Messages
 SCHEDULE_WASHBAR = ("\n\nWashBar : Le WashBar se situe au au : 39 Rue Ausone, 33000, Bordeaux. Attention : Le WashBar "
                     "est fermé le samedi, ainsi que le dimanche jusqu'à 15h.")

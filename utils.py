@@ -129,10 +129,7 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
     print(f"Next booking : {next_booking}")
     print(f"Next booking type : {type(next_booking)}")
     if linges_propres == 1:
-        if index_day_checkin in (1, 2, 3, 4) and index_day_checkout == 6:
-            # S1-1:4
-            return MESSAGE_TAKE_LINGE_FRIDAY
-        elif index_day_checkin in (1, 2, 3, 4) and index_day_checkout == 5:
+        if index_day_checkin in (1, 2, 3, 4) and index_day_checkout == 5:
             # S2-1:4
             if next_booking == simplified_checkout:
                 return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY
@@ -174,6 +171,9 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
         elif index_day_checkin == 7 and index_day_checkout == 5:
             # S3-7
             return MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY
+    else:
+        # S1-1:4 & else
+        return MESSAGE_TAKE_LINGE_FRIDAY
 
 
 # Envoi de messages whatsapp

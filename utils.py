@@ -154,6 +154,8 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
         elif index_day_checkin == 7 and index_day_checkout == 5:
             # S2-7
             return MESSAGE_TAKE_HOME_LAUNDRY_SUNDAY
+        else:
+            return MESSAGE_TAKE_LINGE_FRIDAY
     elif linges_propres == 2:
         if index_day_checkin in (1, 2, 3, 4) and index_day_checkout == 5:
             # S3-1:4
@@ -172,6 +174,8 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
         elif index_day_checkin == 7 and index_day_checkout == 5:
             # S3-7
             return MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY
+        else:
+            return MESSAGE_TAKE_LINGE_FRIDAY
     else:
         # S1-1:4 & else
         return MESSAGE_TAKE_LINGE_FRIDAY

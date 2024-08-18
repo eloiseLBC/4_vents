@@ -35,6 +35,7 @@ def mission_assigned_treatment(data_turno):
                 # Checker les dates de bookings
                 checkin, checkout = utils.get_bookings_dates(id_property)
                 message_to_send = utils.manage_bookings_notifications(checkin, checkout, linges_propres, id_property)
+                print(f"Message to send : {str(message_to_send)}")
                 agent_number, agent_name = utils.find_agent_number(data_turno)
                 utils.send_whatsapp(agent_number, agent_name, message_to_send)
             break

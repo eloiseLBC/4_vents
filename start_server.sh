@@ -10,7 +10,4 @@ sleep 10
 echo "Démarrage de LocalTunnel..."
 nohup lt --port 3000 &
 
-# Remplacez "votresousdomaine" par le sous-domaine que vous souhaitez utiliser avec LocalTunnel.
-# Vous pouvez aussi omettre l'option --subdomain pour que LocalTunnel génère un sous-domaine aléatoire.
-
 echo "Le serveur Flask et LocalTunnel sont en cours d'exécution."

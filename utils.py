@@ -4,9 +4,11 @@ import gspread
 import requests
 from oauth2client.service_account import ServiceAccountCredentials
 from twilio.rest import Client
-from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_PUT_LINGE_S1_SUNDAY, MESSAGE_PUT_MONDAY, MESSAGE_PUT_TUESDAY,
+from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_PUT_MONDAY, MESSAGE_PUT_TUESDAY,
                        MESSAGE_PUT_WEDNESDAY, MESSAGE_PUT_MONDAY_TAKE_FRIDAY, MESSAGE_TAKE_LINGE_FRIDAY,
-                       MESSAGE_PUT_TUESDAY_TAKE_FRIDAY, MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY)
+                       MESSAGE_PUT_TUESDAY_TAKE_FRIDAY, MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY, MESSAGE_PUT_LINGE_SUNDAY,
+                       MESSAGE_PUT_TAKE_BEFORE_SATURDAY, MESSAGE_PUT_THURSDAY_TAKE_FRIDAY,
+                       MESSAGE_PUT_THURSDAY_TAKE_FRIDAY_SATURDAY)
 
 
 # Récupérer le nom de la feuille Excel
@@ -126,12 +128,11 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
     print(f"Next booking : {next_booking}")
     print(f"Next booking type : {type(next_booking)}")
     if linges_propres == 1:
-        if index_day_checkin in (1, 2, 3, 4):
-            if index_day_checkout == 6:
-                # S1-1:4
-                return MESSAGE_TAKE_LINGE_FRIDAY
-        elif index_day_checkin == 1:
-            if index_day_checkout == 5:
+        if index_day_checkin in (1, 2, 3, 4) and index_day_checkout == 6:
+            # S1-1:4
+            return MESSAGE_TAKE_LINGE_FRIDAY
+        match index_day_checkin, index_day_checkout:
+            case 1, 5:
                 # S2-1
                 if next_booking == simplified_checkout:
                     return MESSAGE_PUT_MONDAY_TAKE_FRIDAY
@@ -139,8 +140,7 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
                     return MESSAGE_TAKE_LINGE_FRIDAY
                 else:
                     return MESSAGE_PUT_MONDAY
-        elif index_day_checkin == 2:
-            if index_day_checkout == 5:
+            case 2, 5:
                 # S2-2
                 if next_booking == simplified_checkout:
                     return MESSAGE_PUT_TUESDAY_TAKE_FRIDAY
@@ -148,8 +148,7 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
                     return MESSAGE_TAKE_LINGE_FRIDAY
                 else:
                     return MESSAGE_PUT_TUESDAY
-        elif index_day_checkin == 3:
-            if index_day_checkout == 5:
+            case 3, 5:
                 # S2-3
                 if next_booking == simplified_checkout:
                     return MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY
@@ -157,13 +156,23 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
                     return MESSAGE_TAKE_LINGE_FRIDAY
                 else:
                     return MESSAGE_PUT_WEDNESDAY
-        elif index_day_checkin == 6:
-            if index_day_checkout == 6:
-                # S1 underline dans doc
-                return MESSAGE_PUT_LINGE_S1_SUNDAY
+            case 4, 5:
+                # S2-4
+                if next_booking == simplified_checkout:
+                    return MESSAGE_PUT_THURSDAY_TAKE_FRIDAY
+                elif next_booking == (simplified_checkout + timedelta(days=1)):
+                    return MESSAGE_PUT_THURSDAY_TAKE_FRIDAY_SATURDAY
+                else:
+                    return
+            case 5, 6:
+                if next_booking == simplified_checkout:
+                    return MESSAGE_PUT_TAKE_BEFORE_SATURDAY
+            case 6, 6:
+                # S1-6
+                return MESSAGE_PUT_LINGE_SUNDAY
     elif linges_propres == 2:
-        if index_day_checkin == 1:
-            if index_day_checkout == 5:
+        match index_day_checkin, index_day_checkout:
+            case 1, 5:
                 # S3-1
                 if next_booking == simplified_checkout:
                     return MESSAGE_PUT_MONDAY_TAKE_FRIDAY
@@ -171,8 +180,7 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
                     return MESSAGE_TAKE_LINGE_FRIDAY
                 else:
                     return MESSAGE_PUT_MONDAY
-        elif index_day_checkin == 2:
-            if index_day_checkout == 5:
+            case 2, 5:
                 # S3-2
                 if next_booking == simplified_checkout:
                     return MESSAGE_PUT_TUESDAY_TAKE_FRIDAY
@@ -180,8 +188,7 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
                     return MESSAGE_TAKE_LINGE_FRIDAY
                 else:
                     return MESSAGE_PUT_TUESDAY
-        elif index_day_checkin == 3:
-            if index_day_checkout == 5:
+            case 3, 5:
                 # S3-3
                 if next_booking == simplified_checkout:
                     return MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY

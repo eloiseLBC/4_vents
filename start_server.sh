@@ -1,13 +1,18 @@
 #!/bin/bash
 
+# Définir les fichiers de log
+FLASK_LOG="flask.log"
+LOCAL_TUNNEL_LOG="localtunnel.log"
+
 # Démarrer le serveur Flask en arrière-plan
 echo "Démarrage du serveur Flask..."
-nohup python3 send_message.py &
+nohup python3 send_message.py > $FLASK_LOG 2>&1 &
 
 sleep 10
 
 # Démarrer LocalTunnel en arrière-plan
 echo "Démarrage de LocalTunnel..."
-nohup lt --port 3000 &
+nohup lt --port 3000 > $LOCAL_TUNNEL_LOG 2>&1 &
 
 echo "Le serveur Flask et LocalTunnel sont en cours d'exécution."
+tail -f flask.log

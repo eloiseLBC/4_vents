@@ -188,7 +188,7 @@ def send_whatsapp(number, name, message):
     message = client.messages.create(
         to="whatsapp:+33" + str(number),
         from_="whatsapp:+14155238886",
-        body="Rappel : " + name + message)
+        body="Rappel : " + str(name) + str(message))
     print(message.sid)
 
 

@@ -16,7 +16,7 @@ def mission_assigned_treatment(data_turno):
     sheet_name = utils.get_sheet_name(id_property)
     sheet = utils.get_sheet(sheet_name)
     data_sheets = sheet.get_all_records()
-    print(f"Données google sheets {data_sheets}")
+    logging.info(f"Données google sheets {data_sheets}")
     horodateur_final = "01/01/2024 17:00:00"
     horodateur_final = datetime.strptime(horodateur_final, "%d/%m/%Y %H:%M:%S")
     for record in data_sheets:
@@ -30,7 +30,7 @@ def mission_assigned_treatment(data_turno):
         horodateur_row = datetime.strptime(row['Horodateur'], "%d/%m/%Y %H:%M:%S")
         if horodateur_row == horodateur_final:
             linges_propres = row['Nombre de linges propres restants']
-            print(f"Valeur de linges propres restants : {linges_propres}")
+            logging.info(f"Valeur de linges propres restants : {linges_propres}")
             if linges_propres in (1, 2):
                 # Checker les dates de bookings
                 checkin, checkout = utils.get_bookings_dates(id_property)
@@ -41,10 +41,10 @@ def mission_assigned_treatment(data_turno):
 
 
 def time_break(time_to_sleep):
-    print(f"Pause de {time_to_sleep} minutes : {datetime.now()}")
+    logging.info(f"Pause de {time_to_sleep} minutes : {datetime.now()}")
     time_second = time_to_sleep * 60
     time.sleep(time_second)
-    print(f"Fin de la pause : {datetime.now()}")
+    logging.info(f"Fin de la pause : {datetime.now()}")
 
 
 def check_form(appartment_name, horodateur):

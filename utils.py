@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 
 import gspread
@@ -119,15 +120,15 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
     # Get index day week of booking
     index_day_checkin = checkin.weekday() + 1
     index_day_checkout = checkout.weekday() + 1
-    print(f"Day week checkin : {index_day_checkin}")
-    print(f"Day week checkout : {index_day_checkout}")
+    logging.info(f"Day week checkin : {index_day_checkin}")
+    logging.info(f"Day week checkout : {index_day_checkout}")
     # Get next booking
     simplified_checkout = checkout.date()
     next_booking = get_next_booking(id_property)
-    print(f"Simplified checkout : {simplified_checkout}")
-    print(f"Simplified checkout type : {type(simplified_checkout)}")
-    print(f"Next booking : {next_booking}")
-    print(f"Next booking type : {type(next_booking)}")
+    logging.info(f"Simplified checkout : {simplified_checkout}")
+    logging.info(f"Simplified checkout type : {type(simplified_checkout)}")
+    logging.info(f"Next booking : {next_booking}")
+    logging.info(f"Next booking type : {type(next_booking)}")
     if linges_propres == 1:
         if index_day_checkin in (1, 2, 3, 4) and index_day_checkout == 5:
             # S2-1:4
@@ -183,23 +184,23 @@ def send_whatsapp(number, name, message):
     # Votre Auth Token de Twilio
     auth_token = '0694e59f667b7f0d4065f21a89d14103'
     client = Client(account_sid, auth_token)
-    print(f"Name : {name}")
-    print(f"Name : {message}")
+    logging.info(f"Name : {name}")
+    logging.info(f"Name : {message}")
     message = client.messages.create(
         to="whatsapp:+33" + str(number),
         from_="whatsapp:+14155238886",
         body="Rappel : " + str(name) + str(message))
-    print(message.sid)
+    logging.info(message.sid)
 
 
 # Trouver le numéro de téléphone d'un agent
 def find_agent_number(data_turno):
     agent_name = data_turno['cleaner']['name']
-    print(f"Nom de l'agent : {agent_name}")
+    logging.info(f"Nom de l'agent : {agent_name}")
     # Récupérer les données des agents
     sheet = get_sheet("Agents")
     agents_data = sheet.get_all_records()
-    print(f"Données de l'agent  : {agents_data}")
+    logging.info(f"Données de l'agent  : {agents_data}")
     for agent in agents_data:
         name = agent["Nom de l'agent"]
         phone_number = agent["Téléphone"]

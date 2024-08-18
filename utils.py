@@ -4,11 +4,12 @@ import gspread
 import requests
 from oauth2client.service_account import ServiceAccountCredentials
 from twilio.rest import Client
-from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_PUT_MONDAY, MESSAGE_PUT_TUESDAY,
-                       MESSAGE_PUT_WEDNESDAY, MESSAGE_PUT_MONDAY_TAKE_FRIDAY, MESSAGE_TAKE_LINGE_FRIDAY,
-                       MESSAGE_PUT_TUESDAY_TAKE_FRIDAY, MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY, MESSAGE_PUT_LINGE_SUNDAY,
-                       MESSAGE_PUT_TAKE_BEFORE_SATURDAY, MESSAGE_PUT_THURSDAY_TAKE_FRIDAY,
-                       MESSAGE_PUT_THURSDAY_TAKE_FRIDAY_SATURDAY)
+from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_TAKE_LINGE_FRIDAY, MESSAGE_PUT_LINGE_SUNDAY,
+                       MESSAGE_PUT_TAKE_BEFORE_SATURDAY,
+                       MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY,
+                       MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT, MESSAGE_PUT_LAUNDRY, MESSAGE_PUT_TAKE_FRIDAY,
+                       MESSAGE_TAKE_HOME_LAUNDRY, MESSAGE_TAKE_HOME_LAUNDRY_SUNDAY, MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_2,
+                       MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY_SUNDAY, MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY)
 
 
 # Récupérer le nom de la feuille Excel
@@ -135,67 +136,96 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
             case 1, 5:
                 # S2-1
                 if next_booking == simplified_checkout:
-                    return MESSAGE_PUT_MONDAY_TAKE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY
                 elif next_booking == (simplified_checkout + timedelta(days=1)):
-                    return MESSAGE_TAKE_LINGE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT
                 else:
-                    return MESSAGE_PUT_MONDAY
+                    return MESSAGE_PUT_LAUNDRY
             case 2, 5:
                 # S2-2
                 if next_booking == simplified_checkout:
-                    return MESSAGE_PUT_TUESDAY_TAKE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY
                 elif next_booking == (simplified_checkout + timedelta(days=1)):
-                    return MESSAGE_TAKE_LINGE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT
                 else:
-                    return MESSAGE_PUT_TUESDAY
+                    return MESSAGE_PUT_LAUNDRY
             case 3, 5:
                 # S2-3
                 if next_booking == simplified_checkout:
-                    return MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY
                 elif next_booking == (simplified_checkout + timedelta(days=1)):
-                    return MESSAGE_TAKE_LINGE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT
                 else:
-                    return MESSAGE_PUT_WEDNESDAY
+                    return MESSAGE_PUT_LAUNDRY
             case 4, 5:
                 # S2-4
                 if next_booking == simplified_checkout:
-                    return MESSAGE_PUT_THURSDAY_TAKE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY
                 elif next_booking == (simplified_checkout + timedelta(days=1)):
-                    return MESSAGE_PUT_THURSDAY_TAKE_FRIDAY_SATURDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT
                 else:
                     return
+            case 5, 5:
+                # S2-5
+                return MESSAGE_PUT_TAKE_FRIDAY
             case 5, 6:
                 if next_booking == simplified_checkout:
                     return MESSAGE_PUT_TAKE_BEFORE_SATURDAY
+            case 6, 5:
+                # S2-6
+                return MESSAGE_TAKE_HOME_LAUNDRY
             case 6, 6:
                 # S1-6
+                return MESSAGE_PUT_LINGE_SUNDAY
+            case 7, 5:
+                # S2-7
+                return MESSAGE_TAKE_HOME_LAUNDRY_SUNDAY
+            case 7, 6:
+                # S1-7
                 return MESSAGE_PUT_LINGE_SUNDAY
     elif linges_propres == 2:
         match index_day_checkin, index_day_checkout:
             case 1, 5:
                 # S3-1
                 if next_booking == simplified_checkout:
-                    return MESSAGE_PUT_MONDAY_TAKE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY
                 elif next_booking == (simplified_checkout + timedelta(days=1)):
-                    return MESSAGE_TAKE_LINGE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT
                 else:
-                    return MESSAGE_PUT_MONDAY
+                    return MESSAGE_PUT_LAUNDRY
             case 2, 5:
                 # S3-2
                 if next_booking == simplified_checkout:
-                    return MESSAGE_PUT_TUESDAY_TAKE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY
                 elif next_booking == (simplified_checkout + timedelta(days=1)):
-                    return MESSAGE_TAKE_LINGE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT
                 else:
-                    return MESSAGE_PUT_TUESDAY
+                    return MESSAGE_PUT_LAUNDRY
             case 3, 5:
                 # S3-3
                 if next_booking == simplified_checkout:
-                    return MESSAGE_PUT_WEDNESDAY_TAKE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY
                 elif next_booking == (simplified_checkout + timedelta(days=1)):
-                    return MESSAGE_TAKE_LINGE_FRIDAY
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT
                 else:
-                    return MESSAGE_PUT_WEDNESDAY
+                    return MESSAGE_PUT_LAUNDRY
+            case 4, 5:
+                # S3-4
+                if next_booking == simplified_checkout:
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY
+                elif next_booking == (simplified_checkout + timedelta(days=1)):
+                    return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT
+                else:
+                    return MESSAGE_PUT_LAUNDRY
+            case 5, 5:
+                # S3-5
+                return MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_2
+            case 6, 5:
+                # S3-6
+                return MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY_SUNDAY
+            case 6, 5:
+                # S3-7
+                return MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY
 
 
 # Envoi de messages whatsapp

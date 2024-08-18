@@ -183,6 +183,8 @@ def send_whatsapp(number, name, message):
     # Votre Auth Token de Twilio
     auth_token = '0694e59f667b7f0d4065f21a89d14103'
     client = Client(account_sid, auth_token)
+    print(f"Name : {name}")
+    print(f"Name : {message}")
     message = client.messages.create(
         to="whatsapp:+33" + str(number),
         from_="whatsapp:+14155238886",

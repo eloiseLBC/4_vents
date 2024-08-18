@@ -27,8 +27,8 @@ MESSAGE_TAKE_HOME_LAUNDRY_SUNDAY = (", vous devez aller déposer le linge jeudi 
                                     "WashBar, et le récupérer au plus tard pour vendredi pour la prochaine "
                                     "réservation.\nAttention : Vous pouvez déposer le linge aujourd'hui à partir de "
                                     "15h." + SCHEDULE_WASHBAR)
-MESSAGE_TAKE_LINGE_FRIDAY = (", vous devez aller déposer le linge à la laverie partenaire WashBar et le récupérer"
-                             " au plus tard vendredi." + SCHEDULE_WASHBAR)
+MESSAGE_TAKE_LINGE_FRIDAY = (", vous devez aller déposer le linge à la laverie partenaire WashBar et"
+                             " le récupérer au plus tard vendredi." + SCHEDULE_WASHBAR)
 MESSAGE_PUT_LINGE_SUNDAY = (", vous devez aller déposer le linge sale dimanche, à partir de 15h et le récupérer au "
                             "plus tard vendredi, à la laverie partenaire WashBar." + SCHEDULE_WASHBAR)
 MESSAGE_PUT_LAUNDRY = (", vous devez aller déposer le linge sale, à la laverie partenaire WashBar, et le récupérer au "

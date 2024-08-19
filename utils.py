@@ -53,6 +53,24 @@ def get_properties(id_property):
     return requests.get(url, headers=headers)
 
 
+def get_name_surname_cleaner(agent_id):
+    url = f"https://api.turno.com/v2/contractors/"
+    headers = {
+        "Accept": "application/json",
+        "TBNB-Partner-ID": TBNB_ID,
+        "Authorization": BEARER_TOKEN
+    }
+    response = requests.get(url, headers=headers)
+    # Vérifier le statut de la réponse
+    if response.status_code == 200:
+        print("Réponse : ")
+        print(response)
+    else:
+        # Si la requête échoue, afficher un message d'erreur
+        print("Erreur")
+        return f"Erreur {response.status_code}: {response.text}"
+
+
 # Récupérer les dates de booking
 def get_bookings_dates(id_property):
     response = get_properties(id_property)
@@ -199,7 +217,9 @@ def send_whatsapp(number, name, message):
 
 # Trouver le numéro de téléphone d'un agent
 def find_agent_number(data_turno):
-    agent_name = data_turno['cleaner']['name']
+    agent_id = data_turno['cleaner']['id']
+    # Récupérer le nom et le prénom de l'agent d'entretien
+    agent_name = get_name_surname_cleaner(agent_id)
     logging.info(f"Nom de l'agent : {agent_name}")
     # Récupérer les données des agents
     sheet = get_sheet("Agents")

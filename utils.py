@@ -100,11 +100,11 @@ def get_bookings_dates(id_property):
             print(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
             return checkin_date, checkout_date
         else:
-            print("Aucune reservation")
+            print("No reservation")
             return 0, 0
     else:
-        print("Erreur")
-        return f"Erreur {response.status_code}: {response.text}"
+        print("Error")
+        return f"Error {response.status_code}: {response.text}"
 
 
 # Get next booking checkin
@@ -206,13 +206,13 @@ def send_whatsapp(number, name, message):
     # Votre Auth Token de Twilio
     auth_token = '0694e59f667b7f0d4065f21a89d14103'
     client = Client(account_sid, auth_token)
-    logging.info(f"Name : {name}")
-    logging.info(f"Name : {message}")
+    print(f"Name : {name}")
+    print(f"Message : {message}")
     message = client.messages.create(
         to="whatsapp:+33" + str(number),
         from_="whatsapp:+14155238886",
         body="Rappel : " + str(name) + str(message))
-    logging.info(message.sid)
+    print(message.sid)
 
 
 # Trouver le numéro de téléphone d'un agent

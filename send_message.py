@@ -13,7 +13,9 @@ app = Flask(__name__)
 def mission_assigned_treatment(data_turno):
     id_property = data_turno['property']['id']
     # Récupérer les données sheets
+    print(id_property)
     sheet_name = utils.get_sheet_name(id_property)
+    print(sheet_name)
     sheet = utils.get_sheet(sheet_name)
     data_sheets = sheet.get_all_records()
     print(f"Données google sheets {data_sheets}")
@@ -43,7 +45,7 @@ def mission_assigned_treatment(data_turno):
                 utils.send_whatsapp(agent_number, agent_name, message_to_send)"""
                 # agent_number, agent_name = utils.find_agent_number(data_turno)
                 # Renseigner le numéro de téléphone de Joan
-                utils.send_whatsapp("0652750562", "Joan Busque", message_to_send)
+                utils.send_whatsapp("652750562", "Joan Busque", message_to_send)
             break
 
 
@@ -94,6 +96,7 @@ def home():
 def mission_assigned():
     if request.method == 'POST':
         data_turno = request.json
+        print(data_turno)
         """ Mission assignée : Rappel d'aller chercher le linge, Rappel de déposer le linge """
         mission_assigned_treatment(data_turno)
         return jsonify({"status": "success"}), 200

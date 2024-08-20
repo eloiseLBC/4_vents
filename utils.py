@@ -28,7 +28,7 @@ def get_sheet_name(id_property):
         return sheet_name
     else:
         # If request failed : print error message
-        print("Error")
+        logging.info("Error")
         return f"Error {response.status_code}: {response.text}"
 
 
@@ -64,9 +64,7 @@ def get_name_surname_cleaner(agent_id):
     # Check request statu
     if response.status_code == 200:
         items = response.json()["data"]["items"]
-        print(items)
         for item in items:
-            print(item)
             if item["id"] == agent_id:
                 first_name = item["first_name"]
                 last_name = item["last_name"]
@@ -74,7 +72,7 @@ def get_name_surname_cleaner(agent_id):
                 return long_name
     else:
         # If request failed : print error message
-        print("Error")
+        logging.info("Error")
         return f"Error {response.status_code}: {response.text}"
 
 
@@ -97,20 +95,20 @@ def get_bookings_dates(id_property):
                 if (checkin_item - now) < diff_now_checkin:
                     checkin_date = checkin_item
                     checkout_date = datetime.strptime(item["checkout"], '%Y-%m-%dT%H:%M:%S.%fZ')
-            print(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
+            logging.info(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
             return checkin_date, checkout_date
         elif total_bookings == 1:
             checkin = response.json()["data"]["items"][0]["checkin"]
             checkout = response.json()["data"]["items"][0]["checkout"]
             checkin_date = datetime.strptime(checkin, '%Y-%m-%dT%H:%M:%S.%fZ')
             checkout_date = datetime.strptime(checkout, '%Y-%m-%dT%H:%M:%S.%fZ')
-            print(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
+            logging.info(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
             return checkin_date, checkout_date
         else:
-            print("No reservation")
+            logging.info("No reservation")
             return 0, 0
     else:
-        print("Error")
+        logging.info("Error")
         return f"Error {response.status_code}: {response.text}"
 
 
@@ -127,7 +125,7 @@ def get_next_booking(id_property):
         closest_booking = min(dates, key=lambda date: abs(date - now))
         return closest_booking.date()
     else:
-        print("Error")
+        logging.info("Error")
         return f"Error {response.status_code}: {response.text}"
 
 
@@ -213,13 +211,13 @@ def send_whatsapp(number, name, message):
     # Votre Auth Token de Twilio
     auth_token = '0694e59f667b7f0d4065f21a89d14103'
     client = Client(account_sid, auth_token)
-    print(f"Name : {name}")
-    print(f"Message : {message}")
+    logging.info(f"Name : {name}")
+    logging.info(f"Message : {message}")
     message = client.messages.create(
         to="whatsapp:+33" + str(number),
         from_="whatsapp:+14155238886",
         body="Rappel : " + str(name) + str(message))
-    print(message.sid)
+    logging.info(message.sid)
 
 
 # Find cleaner number
@@ -227,11 +225,11 @@ def find_agent_number(data_turno):
     agent_id = data_turno['cleaner']['id']
     # Récupérer le nom et le prénom de l'agent d'entretien
     agent_name = get_name_surname_cleaner(agent_id)
-    print(f"Nom de l'agent : {agent_name}")
+    logging.info(f"Nom de l'agent : {agent_name}")
     # Récupérer les données des agents
     sheet = get_sheet("Agents")
     agents_data = sheet.get_all_records()
-    print(f"Données de l'agent  : {agents_data}")
+    logging.info(f"Données de l'agent  : {agents_data}")
     for agent in agents_data:
         name = agent["Nom de l'agent"]
         phone_number = agent["Téléphone"]

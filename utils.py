@@ -1,8 +1,8 @@
 import logging
 from datetime import datetime, timedelta
-
 import gspread
 import requests
+
 from oauth2client.service_account import ServiceAccountCredentials
 from twilio.rest import Client
 from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_TAKE_LINGE_FRIDAY, MESSAGE_PUT_LINGE_SUNDAY,
@@ -13,7 +13,7 @@ from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_TAKE_LINGE_FRIDAY, MESSAGE
                        MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY_SUNDAY, MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY)
 
 
-# Récupérer le nom de la feuille Excel
+# Get sheet name
 def get_sheet_name(id_property):
     url = f"https://api.turno.com/v2/properties/{id_property}"
     headers = {
@@ -22,17 +22,17 @@ def get_sheet_name(id_property):
         "Authorization": BEARER_TOKEN
     }
     response = requests.get(url, headers=headers)
-    # Vérifier le statut de la réponse
+    # Check request statu
     if response.status_code == 200:
         sheet_name = response.json()["data"]["alias"]
         return sheet_name
     else:
-        # Si la requête échoue, afficher un message d'erreur
-        print("Erreur")
-        return f"Erreur {response.status_code}: {response.text}"
+        # If request failed : print error message
+        print("Error")
+        return f"Error {response.status_code}: {response.text}"
 
 
-# Récupérer les données d'une feuille Google Sheets
+# Get sheet data
 def get_sheet(sheet_name):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
@@ -61,17 +61,24 @@ def get_name_surname_cleaner(agent_id):
         "Authorization": BEARER_TOKEN
     }
     response = requests.get(url, headers=headers)
-    # Vérifier le statut de la réponse
+    # Check request statu
     if response.status_code == 200:
-        print("Réponse : ")
-        print(response)
+        items = response.json()["data"]["items"]
+        print(items)
+        for item in items:
+            print(item)
+            if item["id"] == agent_id:
+                first_name = item["first_name"]
+                last_name = item["last_name"]
+                long_name = f"{first_name} {last_name}"
+                return long_name
     else:
-        # Si la requête échoue, afficher un message d'erreur
-        print("Erreur")
-        return f"Erreur {response.status_code}: {response.text}"
+        # If request failed : print error message
+        print("Error")
+        return f"Error {response.status_code}: {response.text}"
 
 
-# Récupérer les dates de booking
+# Get booking dates
 def get_bookings_dates(id_property):
     response = get_properties(id_property)
     # Check response status
@@ -120,11 +127,11 @@ def get_next_booking(id_property):
         closest_booking = min(dates, key=lambda date: abs(date - now))
         return closest_booking.date()
     else:
-        print("Erreur")
-        return f"Erreur {response.status_code}: {response.text}"
+        print("Error")
+        return f"Error {response.status_code}: {response.text}"
 
 
-# Ecrire des données dans le google Sheet
+# Write data into Google Sheets
 def write_data_into_sheet(sheet, data):
     values_in_horodateur = sheet.col_values(1)
     nom_empty_values = [value for value in values_in_horodateur if value]
@@ -133,7 +140,7 @@ def write_data_into_sheet(sheet, data):
         sheet.update_cell(row_to_write, i + 1, data[i])
 
 
-# Gestion des situations de notifications
+# Managing notification event
 def manage_bookings_notifications(checkin, checkout, linges_propres, id_property):
     # Get index day week of booking
     index_day_checkin = checkin.weekday() + 1
@@ -199,7 +206,7 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
         return MESSAGE_TAKE_LINGE_FRIDAY
 
 
-# Envoi de messages whatsapp
+# Send WhatsApp message
 def send_whatsapp(number, name, message):
     # Votre Account SID de Twilio
     account_sid = 'ACf567f7cc362746309161d810eb1516a2'
@@ -215,16 +222,16 @@ def send_whatsapp(number, name, message):
     print(message.sid)
 
 
-# Trouver le numéro de téléphone d'un agent
+# Find cleaner number
 def find_agent_number(data_turno):
     agent_id = data_turno['cleaner']['id']
     # Récupérer le nom et le prénom de l'agent d'entretien
     agent_name = get_name_surname_cleaner(agent_id)
-    logging.info(f"Nom de l'agent : {agent_name}")
+    print(f"Nom de l'agent : {agent_name}")
     # Récupérer les données des agents
     sheet = get_sheet("Agents")
     agents_data = sheet.get_all_records()
-    logging.info(f"Données de l'agent  : {agents_data}")
+    print(f"Données de l'agent  : {agents_data}")
     for agent in agents_data:
         name = agent["Nom de l'agent"]
         phone_number = agent["Téléphone"]

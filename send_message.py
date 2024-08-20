@@ -7,20 +7,21 @@ import utils
 import requests
 from constants import MESSAGE_CHECK_FORM, BEARER_TOKEN, TBNB_ID
 
-# Configurer le logger
-logging.basicConfig(filename='flask.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
 app = Flask(__name__)
+# Logger configuration
+logging.basicConfig(filename='flask.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
+logger = logging.getLogger(__name__)
 
 
 def mission_assigned_treatment(data_turno):
     id_property = data_turno['property']['id']
     # Récupérer les données sheets
-    logging.info(id_property)
+    logger.info(id_property)
     sheet_name = utils.get_sheet_name(id_property)
-    logging.info(sheet_name)
+    logger.info(sheet_name)
     sheet = utils.get_sheet(sheet_name)
     data_sheets = sheet.get_all_records()
-    logging.info(f"Données google sheets {data_sheets}")
+    logger.info(f"Données google sheets {data_sheets}")
     horodateur_final = "01/01/2024 17:00:00"
     horodateur_final = datetime.strptime(horodateur_final, "%d/%m/%Y %H:%M:%S")
     for record in data_sheets:
@@ -34,12 +35,12 @@ def mission_assigned_treatment(data_turno):
         horodateur_row = datetime.strptime(row['Horodateur'], "%d/%m/%Y %H:%M:%S")
         if horodateur_row == horodateur_final:
             linges_propres = row['Nombre de linges propres restants']
-            logging.info(f"Valeur de linges propres restants : {linges_propres}")
+            logger.info(f"Valeur de linges propres restants : {linges_propres}")
             if linges_propres in (1, 2):
                 # Checker les dates de bookings
                 checkin, checkout = utils.get_bookings_dates(id_property)
                 message_to_send = utils.manage_bookings_notifications(checkin, checkout, linges_propres, id_property)
-                logging.info(f"Message to send : {str(message_to_send)}")
+                logger.info(f"Message to send : {str(message_to_send)}")
                 """ Si l'envoi de message se fait à l'agent d'entretien et non plus uniquement à Joan Busque,
                 Merci de décommenter la ligne suivante et de remplacer : 
                 utils.send_whatsapp("0652750562", "Joan Busque", message_to_send)
@@ -52,10 +53,10 @@ def mission_assigned_treatment(data_turno):
 
 
 def time_break(time_to_sleep):
-    logging.info(f"Pause de {time_to_sleep} minutes : {datetime.now()}")
+    logger.info(f"Pause de {time_to_sleep} minutes : {datetime.now()}")
     time_second = time_to_sleep * 60
     time.sleep(time_second)
-    logging.info(f"Fin de la pause : {datetime.now()}")
+    logger.info(f"Fin de la pause : {datetime.now()}")
 
 
 def check_form(appartment_name, horodateur):
@@ -98,7 +99,7 @@ def home():
 def mission_assigned():
     if request.method == 'POST':
         data_turno = request.json
-        logging.info(data_turno)
+        logger.info(data_turno)
         """ Mission assignée : Rappel d'aller chercher le linge, Rappel de déposer le linge """
         mission_assigned_treatment(data_turno)
         return jsonify({"status": "success"}), 200
@@ -178,4 +179,4 @@ if __name__ == "__main__":
     try:
         app.run(host='0.0.0.0', port=8080)
     except Exception as e:
-        logging.error(f"Error : {e}")
+        logger.error(f"Error : {e}")

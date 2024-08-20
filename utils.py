@@ -1,8 +1,7 @@
-import logging
 from datetime import datetime, timedelta
 import gspread
 import requests
-
+from send_message import logger
 from oauth2client.service_account import ServiceAccountCredentials
 from twilio.rest import Client
 from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_TAKE_LINGE_FRIDAY, MESSAGE_PUT_LINGE_SUNDAY,
@@ -28,7 +27,7 @@ def get_sheet_name(id_property):
         return sheet_name
     else:
         # If request failed : print error message
-        logging.info("Error")
+        logger.info("Error")
         return f"Error {response.status_code}: {response.text}"
 
 
@@ -72,7 +71,7 @@ def get_name_surname_cleaner(agent_id):
                 return long_name
     else:
         # If request failed : print error message
-        logging.info("Error")
+        logger.info("Error")
         return f"Error {response.status_code}: {response.text}"
 
 
@@ -95,20 +94,20 @@ def get_bookings_dates(id_property):
                 if (checkin_item - now) < diff_now_checkin:
                     checkin_date = checkin_item
                     checkout_date = datetime.strptime(item["checkout"], '%Y-%m-%dT%H:%M:%S.%fZ')
-            logging.info(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
+            logger.info(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
             return checkin_date, checkout_date
         elif total_bookings == 1:
             checkin = response.json()["data"]["items"][0]["checkin"]
             checkout = response.json()["data"]["items"][0]["checkout"]
             checkin_date = datetime.strptime(checkin, '%Y-%m-%dT%H:%M:%S.%fZ')
             checkout_date = datetime.strptime(checkout, '%Y-%m-%dT%H:%M:%S.%fZ')
-            logging.info(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
+            logger.info(f"Checkin date : {checkin_date}. Checkout date : {checkout_date}")
             return checkin_date, checkout_date
         else:
-            logging.info("No reservation")
+            logger.info("No reservation")
             return 0, 0
     else:
-        logging.info("Error")
+        logger.info("Error")
         return f"Error {response.status_code}: {response.text}"
 
 
@@ -125,7 +124,7 @@ def get_next_booking(id_property):
         closest_booking = min(dates, key=lambda date: abs(date - now))
         return closest_booking.date()
     else:
-        logging.info("Error")
+        logger.info("Error")
         return f"Error {response.status_code}: {response.text}"
 
 
@@ -143,15 +142,15 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
     # Get index day week of booking
     index_day_checkin = checkin.weekday() + 1
     index_day_checkout = checkout.weekday() + 1
-    logging.info(f"Day week checkin : {index_day_checkin}")
-    logging.info(f"Day week checkout : {index_day_checkout}")
+    logger.info(f"Day week checkin : {index_day_checkin}")
+    logger.info(f"Day week checkout : {index_day_checkout}")
     # Get next booking
     simplified_checkout = checkout.date()
     next_booking = get_next_booking(id_property)
-    logging.info(f"Simplified checkout : {simplified_checkout}")
-    logging.info(f"Simplified checkout type : {type(simplified_checkout)}")
-    logging.info(f"Next booking : {next_booking}")
-    logging.info(f"Next booking type : {type(next_booking)}")
+    logger.info(f"Simplified checkout : {simplified_checkout}")
+    logger.info(f"Simplified checkout type : {type(simplified_checkout)}")
+    logger.info(f"Next booking : {next_booking}")
+    logger.info(f"Next booking type : {type(next_booking)}")
     if linges_propres == 1:
         if index_day_checkin in (1, 2, 3, 4) and index_day_checkout == 5:
             # S2-1:4
@@ -211,13 +210,13 @@ def send_whatsapp(number, name, message):
     # Votre Auth Token de Twilio
     auth_token = '0694e59f667b7f0d4065f21a89d14103'
     client = Client(account_sid, auth_token)
-    logging.info(f"Name : {name}")
-    logging.info(f"Message : {message}")
+    logger.info(f"Name : {name}")
+    logger.info(f"Message : {message}")
     message = client.messages.create(
         to="whatsapp:+33" + str(number),
         from_="whatsapp:+14155238886",
         body="Rappel : " + str(name) + str(message))
-    logging.info(message.sid)
+    logger.info(message.sid)
 
 
 # Find cleaner number
@@ -225,11 +224,11 @@ def find_agent_number(data_turno):
     agent_id = data_turno['cleaner']['id']
     # Récupérer le nom et le prénom de l'agent d'entretien
     agent_name = get_name_surname_cleaner(agent_id)
-    logging.info(f"Nom de l'agent : {agent_name}")
+    logger.info(f"Nom de l'agent : {agent_name}")
     # Récupérer les données des agents
     sheet = get_sheet("Agents")
     agents_data = sheet.get_all_records()
-    logging.info(f"Données de l'agent  : {agents_data}")
+    logger.info(f"Données de l'agent  : {agents_data}")
     for agent in agents_data:
         name = agent["Nom de l'agent"]
         phone_number = agent["Téléphone"]

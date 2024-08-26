@@ -12,6 +12,6 @@ sleep 10
 
 # Démarrer LocalTunnel en arrière-plan
 echo "Démarrage de LocalTunnel..."
-nohup ngrok http --domain=nominally-logical-pegasus.ngrok-free.app 80 > $LOCAL_TUNNEL_LOG 2>&1 &
+nohup ngrok http --domain=nominally-logical-pegasus.ngrok-free.app 8080 > $LOCAL_TUNNEL_LOG 2>&1 &
 
 echo "Le serveur Flask et LocalTunnel sont en cours d'exécution."

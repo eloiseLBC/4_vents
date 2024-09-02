@@ -9,7 +9,7 @@ from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_TAKE_LINGE_FRIDAY, MESSAGE
                        MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY,
                        MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT, MESSAGE_PUT_LAUNDRY, MESSAGE_PUT_TAKE_FRIDAY,
                        MESSAGE_TAKE_HOME_LAUNDRY, MESSAGE_TAKE_HOME_LAUNDRY_SUNDAY, MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_2,
-                       MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY_SUNDAY, MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY)
+                       MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY_SUNDAY, MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY, ACCOUNT_SID)
 
 
 # Get sheet name
@@ -24,6 +24,7 @@ def get_sheet_name(id_property):
     # Check request statu
     if response.status_code == 200:
         sheet_name = response.json()["data"]["alias"]
+        logger.info(f"Sheet name : {sheet_name}")
         return sheet_name
     else:
         # If request failed : print error message
@@ -128,6 +129,12 @@ def get_next_booking(id_property):
         return f"Error {response.status_code}: {response.text}"
 
 
+def concat_name(data_turno):
+    agent_lastname = data_turno["data"]["assignment"]["contractor"]["last_name"]
+    agent_surname = data_turno["data"]["assignment"]["contractor"]["first_name"]
+    return f"{agent_surname} {agent_lastname}"
+
+
 # Write data into Google Sheets
 def write_data_into_sheet(sheet, data):
     values_in_horodateur = sheet.col_values(1)
@@ -206,7 +213,7 @@ def manage_bookings_notifications(checkin, checkout, linges_propres, id_property
 # Send WhatsApp message
 def send_whatsapp(number, name, message):
     # Votre Account SID de Twilio
-    account_sid = 'ACf567f7cc362746309161d810eb1516a2'
+    account_sid = ACCOUNT_SID
     # Votre Auth Token de Twilio
     auth_token = '0694e59f667b7f0d4065f21a89d14103'
     client = Client(account_sid, auth_token)
@@ -221,7 +228,7 @@ def send_whatsapp(number, name, message):
 
 # Find cleaner number
 def find_agent_number(data_turno):
-    agent_id = data_turno['cleaner']['id']
+    agent_id = data_turno['data']['assignment']['contractor']['id']
     # Récupérer le nom et le prénom de l'agent d'entretien
     agent_name = get_name_surname_cleaner(agent_id)
     logger.info(f"Nom de l'agent : {agent_name}")

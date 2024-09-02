@@ -14,11 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 def mission_assigned_treatment(data_turno):
-    id_property = data_turno['property']['id']
+    id_property = data_turno['data']['booking ']['property_id']
     # Récupérer les données sheets
     logger.info(id_property)
     sheet_name = utils.get_sheet_name(id_property)
-    logger.info(sheet_name)
     sheet = utils.get_sheet(sheet_name)
     data_sheets = sheet.get_all_records()
     logger.info(f"Données google sheets {data_sheets}")
@@ -76,13 +75,14 @@ def check_form(appartment_name, horodateur):
 
 def mission_started_treatment(data_turno):
     horodateur = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-    service_agent = data_turno['cleaner']['name']
-    appartment = data_turno['property']['name']
+    service_agent = utils.concat_name(data_turno)
+    logger.info(f"Agent name : {service_agent}")
+    appartment = data_turno['data']['property_alias']
     data = [horodateur, service_agent, appartment]
     sheet = utils.get_sheet("Mission commencée")
     # Ecrire les données dans le google Sheet
     utils.write_data_into_sheet(sheet, data)
-    time_break(10)
+    time_break(1)
     # Vérifier si le formulaire a été soumis
     if not check_form(appartment, horodateur):
         agent_number, agent_name = utils.find_agent_number(data_turno)
@@ -114,6 +114,7 @@ def mission_assigned():
 def mission_started():
     if request.method == 'POST':
         data_turno = request.json
+        logger.info(data_turno)
         """ Mission assignée : Rappel d'aller chercher le linge, Rappel de déposer le linge """
         mission_started_treatment(data_turno)
         return jsonify({"status": "success"}), 200

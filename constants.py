@@ -10,7 +10,7 @@ BEARER_TOKEN = ("Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianR
                 "cPnYuXgcWNaLlTV7xQ5zlMD5qfbZofZjff5T2JAzFxeFiovozPusfQukTbAc6CZFW6pd3maxTB-zr0wFvJ7rLEpQS_Ucp8JiS0UDA"
                 "0nmi4Uz_PD9AjyCLO1neSXdEIucnyA1fJCWLzbXb9BfV-kzqsfu3R7GlkaNmgG-__vNyxxm07aHcmi_P0A8jA6cnT73jXjq6DRrok"
                 "WmmBNZ8qcum9euzJoD9isZ-pbMZYQoQFw7FDka-Db-qYEuLnPVhwSiW6W3Gw2wmGclt6QWFGS9KDgtSMrjih24")
-ACCOUNT_SID = "AC556bd0c68b1a5edafa21078f4962ba4c"
+ACCOUNT_SID = "ACf567f7cc362746309161d810eb1516a2"
 # Messages
 SCHEDULE_WASHBAR = ("\n\nWashBar : Le WashBar se situe au au : 39 Rue Ausone, 33000, Bordeaux. Attention : Le WashBar "
                     "est fermé le samedi, ainsi que le dimanche jusqu'à 15h.")

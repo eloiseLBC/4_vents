@@ -3,9 +3,10 @@ import sys
 import time
 from datetime import datetime
 from flask import Flask, request, jsonify
-import utils
+import src.utils as utils
 import requests
-from constants import MESSAGE_CHECK_FORM, BEARER_TOKEN, TBNB_ID
+from secrets_variables import BEARER_TOKEN, TBNB_ID
+from src.constants import MESSAGE_CHECK_FORM
 
 app = Flask(__name__)
 # Logger configuration

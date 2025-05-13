@@ -1,15 +1,16 @@
 from datetime import datetime, timedelta
 import gspread
 import requests
-from send_message import logger
+from src.send_message import logger
 from oauth2client.service_account import ServiceAccountCredentials
 from twilio.rest import Client
-from constants import (TBNB_ID, BEARER_TOKEN, MESSAGE_TAKE_LINGE_FRIDAY, MESSAGE_PUT_LINGE_SUNDAY,
+from src.constants import (MESSAGE_TAKE_LINGE_FRIDAY, MESSAGE_PUT_LINGE_SUNDAY,
                        MESSAGE_PUT_TAKE_BEFORE_SATURDAY,
                        MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY,
                        MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_NEXT, MESSAGE_PUT_LAUNDRY, MESSAGE_PUT_TAKE_FRIDAY,
                        MESSAGE_TAKE_HOME_LAUNDRY, MESSAGE_TAKE_HOME_LAUNDRY_SUNDAY, MESSAGE_PUT_LAUNDRY_TAKE_FRIDAY_2,
-                       MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY_SUNDAY, MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY, ACCOUNT_SID)
+                       MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY_SUNDAY, MESSAGE_PUT_LAUNDRY_TAKE_THURSDAY)
+from secrets_variables import TBNB_ID, BEARER_TOKEN, ACCOUNT_SID
 
 
 # Get sheet name
@@ -35,9 +36,9 @@ def get_sheet_name(id_property):
 # Get sheet data
 def get_sheet(sheet_name):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('../secrets/credentials.json', scope)
     client = gspread.authorize(creds)
-    spreadsheet = client.open("Aux4Vents_DB")
+    spreadsheet = client.open("../secrets/Aux4Vents_DB")
     sheet = spreadsheet.worksheet(sheet_name)
     return sheet
 
